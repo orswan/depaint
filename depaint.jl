@@ -1,5 +1,6 @@
 # depaint.jl
 # Integrates atomic trajectories in the presence of a rastering laser dipole force.  
+module depaint
 
 using Plots, DifferentialEquations
 
@@ -10,9 +11,14 @@ function getGaussianStylus(width,height)
 	return stylus
 end
 
-function getPath
+function getPath1(R,fradial,ftheta)
+	function spiralPath(t)
+		return R*(mod(fradial*t,2)-1)*[cos(ftheta*t),sin(ftheta*t)]
+	end
+	return spiralPath
+end
 
-function evolve(path,stylus,Rcutoff,init,t0,tf,vel)
+function evolve(path,Rstylus,amp,init,t0,tf)
 	# Integrates motion of an atom under laser dipole force
 		# path:		<function> path of laser raster; function of time
 		# stylus:	<function> laser beam shape; function of (x,y)
@@ -27,15 +33,17 @@ function evolve(path,stylus,Rcutoff,init,t0,tf,vel)
 	p = init[3:4]	# Current momentum
 	t = t0			# Current time
 	L = path(t0)	# Laser position
-	states = []		# will store state data over time, as (t,x,y,px,py) vectors
 	
-"""	while t < tf
-		if norm(x-L) > Rcutoff
-			
-		else
-			
-		end
-		
-		
-	end"""
+	function dudt(u,p,t)
+		c = path(t)
+		a = 2*amp*exp(-((u[1]-c[1])^2+(u[2]-c[2])^2)/(Rstylus^2))/Rstylus^2
+		return [u[3],u[4],(u[1]-c[1])*a,(u[2]-c[2])*a]
+	end
+	println(dudt(init,0,0))
+	prob = ODEProblem(dudt,init,(t0,tf))
+	println("hi")
+	sol = solve(prob)
+	return sol
+end
+
 end
