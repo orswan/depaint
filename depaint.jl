@@ -18,7 +18,7 @@ function getPath1(R,fradial,ftheta)
 	return spiralPath
 end
 
-function evolve(path,Rstylus,amp,init,t0,tf)
+function evolve(path,Rstylus,amp,init,tf)
 	# Integrates motion of an atom under laser dipole force
 		# path:		<function> path of laser raster; function of time
 		# stylus:	<function> laser beam shape; function of (x,y)
@@ -28,6 +28,7 @@ function evolve(path,Rstylus,amp,init,t0,tf)
 		# tf:		<number> final time to integrate to
 		# vel:		<positive number> approximate velocity of the laser path; used for optimization.
 	
+	t0=0		# Initial time
 	# Initialize state variables
 	x = init[1:2]	# Current position
 	p = init[3:4]	# Current momentum
@@ -44,6 +45,32 @@ function evolve(path,Rstylus,amp,init,t0,tf)
 	println("hi")
 	sol = solve(prob)
 	return sol
+end
+
+function see(times,path,Rstylus,sol)
+	# Plots laser and particle trajectories
+	p = [path(t)[i] for t in times, i=1:2]
+	s = [sol(t)[i] for t in times, i=1:2]
+	xmax = findmax(cat(p[:,1],s[:,1];dims=1))[1]
+	xmin = findmin(cat(p[:,1],s[:,1];dims=1))[1]
+	ymax = findmax(cat(p[:,2],s[:,2];dims=1))[1]
+	ymin = findmin(cat(p[:,2],s[:,2];dims=1))[1]
+	
+	mradius = 500/2*Rstylus/(xmax-xmin)
+	@gif for i in 1:length(times)
+		println("Progress: ",i," of ",length(times))
+		scatter([p[i,1]],[p[i,2]],legend=false,xlim=(xmin-Rstylus,xmax+Rstylus),ylim=(ymin-Rstylus,ymax+Rstylus),size=(500,500),marker=(:circle,mradius,.4,:red))
+		scatter!([s[i,1]],[s[i,2]],marker=(:circle,10,.7,:blue))
+	end
+end
+
+function unpaint(path,potential,maxvel=1.0)
+	# Determines the speed required to yield a path which traces out a desired potential.
+	
+end
+
+function ensemble(path,Rstylus,amp,temp,tf)
+	# Determines evolution of ensemble of atoms.
 end
 
 end
