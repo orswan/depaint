@@ -64,9 +64,9 @@ function see(times,path,Rstylus,sol)
 	end
 end
 
-function unpaint(path,potential,maxvel=1.0)
+function unpaint(path,potential,tf,maxvel=1.0)
 	# Determines the speed required to yield a path which traces out a desired potential.
-	
+	#dudt(u,p,t) = 
 end
 
 function ensemble(path,Rstylus,amp,temp,tf)
