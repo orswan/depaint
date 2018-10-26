@@ -2,7 +2,7 @@
 # Integrates atomic trajectories in the presence of a rastering laser dipole force.  
 module depaint
 
-using Plots, DifferentialEquations
+using Plots, DifferentialEquations, ApproxFun
 
 function getGaussianStylus(width,height)
 	function stylus(x::Real,y::Real)
