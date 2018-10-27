@@ -66,11 +66,36 @@ end
 
 function unpaint(path,potential,tf,maxvel=1.0)
 	# Determines the speed required to yield a path which traces out a desired potential.
-	#dudt(u,p,t) = 
+	# dudt(u,p,t) = 
+	
 end
 
 function ensemble(path,Rstylus,amp,temp,tf)
 	# Determines evolution of ensemble of atoms.
 end
+
+#-----------------  Paths  ---------------
+# Here I generate some useful paths for the standard unit square.
+
+function snake(n,backtrack=false)
+	# A snake path with spacing 1/n and unit speed
+	if !(backtrack)
+		println(1)
+		function path(t)
+			println(t)
+			T = mod(t,n-2)
+			m = floor(T/((n-1)/n))
+			return (m + 1/n + max(0,T-m-(n-2)/2) , (1-(-1)^m)/2 + (-1)^m * (1/n + min(T-m,(n-2)/n)))
+		end
+	else
+		println(2)
+		function path(t)
+			
+		end
+	end
+	println(path(n))
+	return path
+end
+
 
 end
